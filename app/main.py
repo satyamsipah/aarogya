@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import check_db_connection
 from app.routers import patients
+from app.routers import ask
 
 app = FastAPI(
     title="Aarogya Clinical Co-Pilot",
@@ -13,10 +14,11 @@ app = FastAPI(
         "Decision-support API for clinicians. "
         "All output must be reviewed by a qualified human clinician."
     ),
-    version="0.2.0",
+    version="0.3.0",
 )
 
 app.include_router(patients.router)
+app.include_router(ask.router)
 
 
 @app.get("/health", tags=["ops"])
