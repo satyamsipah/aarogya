@@ -13,6 +13,13 @@ class Settings:
     APP_ENV: str = os.environ.get("APP_ENV", "development")
     LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "INFO")
 
+    # Phase 2 — RAG / LLM
+    GOOGLE_API_KEY: str = os.environ.get("GOOGLE_API_KEY", "")
+    GEMINI_MODEL: str = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash-latest")
+    EMBED_MODEL: str = os.environ.get("EMBED_MODEL", "models/text-embedding-004")
+    EMBED_DIMS: int = int(os.environ.get("EMBED_DIMS", "768"))
+    KB_TOP_K: int = int(os.environ.get("KB_TOP_K", "5"))
+
     @property
     def database_url(self) -> str:
         u = self.POSTGRES_USER

@@ -27,8 +27,14 @@ def db_session():
     """
     Fresh in-memory SQLite database + session per test.
     StaticPool ensures create_all() and the session share the same connection.
+
+    Only FHIR clinical tables are created; KnowledgeChunk uses pgvector's
+    Vector type which is not supported by SQLite — RAG tests mock the retriever.
     """
-    import app.models  # noqa: F401 — registers all models with Base.metadata
+    from app.models.patient import Patient
+    from app.models.observation import Observation
+    from app.models.medication_request import MedicationRequest
+    from app.models.diagnostic_report import DiagnosticReport
     from app.database import Base
 
     engine = create_engine(
@@ -36,7 +42,15 @@ def db_session():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(
+        engine,
+        tables=[
+            Patient.__table__,
+            Observation.__table__,
+            MedicationRequest.__table__,
+            DiagnosticReport.__table__,
+        ],
+    )
     Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
     session = Session()
     yield session
